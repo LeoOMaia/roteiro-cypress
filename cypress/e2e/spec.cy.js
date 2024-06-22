@@ -56,4 +56,71 @@ describe('template spec', () => {
     cy.get('.todo-list li')
       .should('have.length', 2);
   });
+
+  it('Verifica se tela está vazia', () => {
+    cy.visit('http://127.0.0.1:7001');
+
+    cy.get('.todo-list li')
+      .should('have.length', 0);
+  });
+
+  it('Verifica se é possível marcar e desmarcar uma tarefa', () => {
+    cy.visit('http://127.0.0.1:7001');
+
+    cy.get('.new-todo')
+      .type('Tarefa{enter}');
+
+    cy.contains('Active').click();
+    cy.get('.todo-list li')
+      .should('have.length', 1)
+      .first()
+      .should('have.text', 'Tarefa');
+    
+    cy.get('.todo-list li .toggle')
+      .click();
+
+    cy.get('.todo-list li')
+      .should('have.length', 0)
+
+    cy.contains('Completed').click();
+    cy.get('.todo-list li')
+      .should('have.length', 1)
+      .first()
+      .should('have.text', 'Tarefa');
+
+    cy.get('.todo-list li .toggle')
+      .click();
+
+    cy.get('.todo-list li')
+      .should('have.length', 0)
+
+    cy.contains('Active').click();
+    cy.get('.todo-list li')
+      .should('have.length', 1)
+      .first()
+      .should('have.text', 'Tarefa');
+  });
+
+  it('Verifica se é possível editar uma tarefa', () => {
+    cy.visit('http://127.0.0.1:7001');
+
+    cy.get('.new-todo')
+      .type('Tarefa Incompleta{enter}');
+
+    cy.get('.todo-list li label')
+      .dblclick();
+
+    cy.get('.todo-list li .edit')
+      .clear()
+      .type('Tarefa Completa{enter}');
+
+    cy.get('.todo-list li .toggle')
+      .click();
+
+    cy.contains('Completed').click();
+    cy.get('.todo-list li')
+      .should('have.length', 1)
+      .first()
+      .should('have.text', 'Tarefa Completa');
+  });
 });
